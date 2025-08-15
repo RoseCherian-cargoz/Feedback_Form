@@ -19,17 +19,17 @@ SCOPES = [
 # service_account_info = json.loads(st.secrets["google"]["service_account_json"])
 # creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 creds = service_account.Credentials.from_service_account_info(
-    st.secrets["service_account_json"],
+    st.secrets["gcp_service_account"],
     scopes=SCOPES
 )
 
 # Google Sheets setup
-SHEET_ID = st.secrets["google"]["sheet_id"]
+SHEET_ID = st.secrets["google"]["1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0"]
 gc = gspread.authorize(creds)
 worksheet = gc.open_by_key(SHEET_ID).sheet1
 
 # Google Drive setup
-FOLDER_ID = st.secrets["google"]["folder_id"]
+FOLDER_ID = st.secrets["google"]["1kAwCctzw2EScivSgTOR8aFbu4nadz46a"]
 drive_service = build("drive", "v3", credentials=creds)
 
 # ------------------- Streamlit Form -------------------
