@@ -6,27 +6,30 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 import io
 import json
-import gspread
-print("gspread imported successfully!")
-
 
 # ------------------- Google API Setup -------------------
+# SPREADSHEET_ID = '1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0'  # only the ID
+# SHEET_NAME = 'sheet1'  # exact name of the sheet tab
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
 # Load credentials from Streamlit Secrets
-service_account_info = json.loads(st.secrets["google"]["service_account_json"])
-creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+# service_account_info = json.loads(st.secrets["google"]["service_account_json"])
+# creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=SCOPES
+)
 
 # Google Sheets setup
-SHEET_ID = st.secrets["google"]["sheet_id"]  # Set this in Secrets
+SHEET_ID = st.secrets["google"]["sheet_id"]
 gc = gspread.authorize(creds)
 worksheet = gc.open_by_key(SHEET_ID).sheet1
 
 # Google Drive setup
-FOLDER_ID = st.secrets["google"]["folder_id"]  # Set this in Secrets
+FOLDER_ID = st.secrets["google"]["folder_id"]
 drive_service = build("drive", "v3", credentials=creds)
 
 # ------------------- Streamlit Form -------------------
@@ -54,31 +57,37 @@ if st.button("Submit Feedback"):
     # Upload files to Google Drive
     if attachments:
         for file in attachments:
-            file_metadata = {"name": file.name, "parents": [FOLDER_ID]}
-            media = MediaIoBaseUpload(io.BytesIO(file.read()), mimetype=file.type)
-            uploaded_file = drive_service.files().create(
-                body=file_metadata,
-                media_body=media,
-                fields="id"
-            ).execute()
-            file_id = uploaded_file.get("id")
-            file_link = f"https://drive.google.com/file/d/{file_id}/view"
-            file_links.append(file_link)
+            try:
+                file_metadata = {"name": file.name, "parents": [FOLDER_ID]}
+                media = MediaIoBaseUpload(io.BytesIO(file.read()), mimetype=file.type or "application/octet-stream")
+                uploaded_file = drive_service.files().create(
+                    body=file_metadata,
+                    media_body=media,
+                    fields="id"
+                ).execute()
+                file_id = uploaded_file.get("id")
+                file_link = f"https://drive.google.com/file/d/{file_id}/view"
+                file_links.append(file_link)
+            except Exception as e:
+                st.error(f"Failed to upload {file.name}: {e}")
 
     # Save submission to Google Sheet
-    worksheet.append_row([
-        str(feedback_date),
-        poc,
-        team,
-        feedback,
-        description,
-        product_flow,
-        reason_impact,
-        ", ".join(file_links)
-    ])
+    try:
+        worksheet.append_row([
+            str(feedback_date),
+            str(poc),
+            str(team),
+            str(feedback),
+            str(description),
+            str(product_flow),
+            str(reason_impact),
+            ", ".join(file_links)
+        ])
+        st.success("✅ Feedback submitted successfully!")
+    except Exception as e:
+        st.error(f"Failed to save feedback to Google Sheet: {e}")
 
-    # Success message & summary
-    st.success("✅ Feedback submitted successfully!")
+    # Summary
     st.write("### Summary of your submission")
     st.write(f"**Feedback:** {feedback}")
     st.write(f"**Description:** {description}")
