@@ -19,7 +19,7 @@ SCOPES = [
 # service_account_info = json.loads(st.secrets["google"]["service_account_json"])
 # creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 creds = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
+    st.secrets["service_account_json"],
     scopes=SCOPES
 )
 
