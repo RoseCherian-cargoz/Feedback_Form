@@ -16,10 +16,9 @@ SCOPES = [
 ]
 
 # Load credentials from Streamlit Secrets
-# service_account_info = json.loads(st.secrets["google"]["service_account_json"])
-# creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+service_account_info = json.loads(st.secrets["google"]["gcp_service_account"])  # parse JSON string
 creds = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
+    service_account_info,
     scopes=SCOPES
 )
 
