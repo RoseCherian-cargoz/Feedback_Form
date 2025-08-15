@@ -23,7 +23,10 @@ creds = service_account.Credentials.from_service_account_info(
 )
 
 SHEET_ID = st.secrets["google"]["sheet_id"]
+gc = gspread.authorize(creds)
+worksheet = gc.open_by_key(SHEET_ID).sheet1
 FOLDER_ID = st.secrets["google"]["folder_id"]
+drive_service = build("drive", "v3", credentials=creds)
 
 # ------------------- Streamlit Form -------------------
 st.title("📋 Product Feedback Submission Form")
