@@ -5,6 +5,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 import io
+import json
 
 # ------------------- Google API Setup -------------------
 SCOPES = [
@@ -12,17 +13,20 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Load Service Account JSON
-creds = Credentials.from_service_account_file("C:\Users\rose\Documents\VS code scripts\Product feedback form\feeback-form-integration-884b6f0a5709.json", scopes=SCOPES)
+# Load credentials from Streamlit Secrets
+service_account_info = json.loads(st.secrets["google"]["service_account_json"])
+creds = Credentials.from_service_account_file(
+    "C:/Users/rose/Documents/VS code scripts/Product feedback form/feeback-form-integration-884b6f0a5709.json",
+    scopes=SCOPES)
 
 # Google Sheets setup
-SHEET_ID = "1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0"  # Replace with your sheet ID
+SHEET_ID = st.secrets["google"]["sheet_id"]  # Add this in Secrets
 gc = gspread.authorize(creds)
 worksheet = gc.open_by_key(SHEET_ID).sheet1
 
 # Google Drive setup
+FOLDER_ID = st.secrets["google"]["folder_id"]  # Add this in Secrets
 drive_service = build("drive", "v3", credentials=creds)
-FOLDER_ID = "1kAwCctzw2EScivSgTOR8aFbu4nadz46a"  # Replace with your folder ID
 
 # ------------------- Streamlit Form -------------------
 st.title("📋 Product Feedback Submission Form")
