@@ -6,6 +6,9 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 import io
 import json
+import gspread
+print("gspread imported successfully!")
+
 
 # ------------------- Google API Setup -------------------
 SCOPES = [
@@ -15,17 +18,15 @@ SCOPES = [
 
 # Load credentials from Streamlit Secrets
 service_account_info = json.loads(st.secrets["google"]["service_account_json"])
-creds = Credentials.from_service_account_file(
-    "C:/Users/rose/Documents/VS code scripts/Product feedback form/feeback-form-integration-884b6f0a5709.json",
-    scopes=SCOPES)
+creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 
 # Google Sheets setup
-SHEET_ID = st.secrets["google"]["sheet_id"]  # Add this in Secrets
+SHEET_ID = st.secrets["google"]["sheet_id"]  # Set this in Secrets
 gc = gspread.authorize(creds)
 worksheet = gc.open_by_key(SHEET_ID).sheet1
 
 # Google Drive setup
-FOLDER_ID = st.secrets["google"]["folder_id"]  # Add this in Secrets
+FOLDER_ID = st.secrets["google"]["folder_id"]  # Set this in Secrets
 drive_service = build("drive", "v3", credentials=creds)
 
 # ------------------- Streamlit Form -------------------
@@ -53,10 +54,7 @@ if st.button("Submit Feedback"):
     # Upload files to Google Drive
     if attachments:
         for file in attachments:
-            file_metadata = {
-                "name": file.name,
-                "parents": [FOLDER_ID]
-            }
+            file_metadata = {"name": file.name, "parents": [FOLDER_ID]}
             media = MediaIoBaseUpload(io.BytesIO(file.read()), mimetype=file.type)
             uploaded_file = drive_service.files().create(
                 body=file_metadata,
