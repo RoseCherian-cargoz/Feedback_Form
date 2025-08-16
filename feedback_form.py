@@ -9,9 +9,9 @@ SHEET_NAME = "Sheet1"
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-# Service account credentials (from Streamlit secrets)
+# Service account credentials from Streamlit secrets
 credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
+    st.secrets["google"]["gcp_service_account"],  # note: section [google] in your secrets.toml
     scopes=SCOPES
 )
 
@@ -19,19 +19,17 @@ sheets_service = build("sheets", "v4", credentials=credentials)
 
 # ------------------- FUNCTIONS -------------------
 def ensure_header():
-    """Ensures the header row exists in the sheet."""
+    """Ensure the header row exists in the sheet."""
     header = [
         "POC", "Team", "Date", "Feedback",
         "Description", "Product", "Impact", "Attachments"
     ]
-
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
         range=f"{SHEET_NAME}!A1:H1"
     ).execute()
 
     existing_header = result.get("values", [])
-
     if not existing_header or existing_header[0] != header:
         sheets_service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
@@ -42,7 +40,7 @@ def ensure_header():
 
 
 def append_row(data: list):
-    """Appends a single row of data to the sheet."""
+    """Append a single row of data to the Google Sheet."""
     sheets_service.spreadsheets().values().append(
         spreadsheetId=SPREADSHEET_ID,
         range=f"{SHEET_NAME}!A2",
@@ -52,7 +50,7 @@ def append_row(data: list):
     ).execute()
 
 
-# ------------------- UI -------------------
+# ------------------- STREAMLIT UI -------------------
 st.title("📋 Product Feedback Submission Form")
 
 poc = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
@@ -78,7 +76,7 @@ if st.button("Submit"):
             # Ensure header exists
             ensure_header()
 
-            # Handle attachments (just names or N/A)
+            # Handle attachments
             if attachments:
                 attachment_str = ", ".join([file.name for file in attachments])
             else:
@@ -86,11 +84,17 @@ if st.button("Submit"):
 
             # Prepare row
             row = [
-                poc, team, str(feedback_date), feedback,
-                description, product_flow, reason_impact, attachment_str
+                poc,
+                team,
+                str(feedback_date),
+                feedback,
+                description,
+                product_flow,
+                reason_impact,
+                attachment_str
             ]
 
-            # Append row
+            # Append row to Google Sheet
             append_row(row)
 
             st.success("✅ Form submitted successfully and saved to Google Sheets!")
