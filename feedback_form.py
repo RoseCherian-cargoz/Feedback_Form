@@ -11,7 +11,7 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Service account credentials from Streamlit secrets
 credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["google"]["gcp_service_account"],  # note: section [google] in your secrets.toml
+    json.loads(st.secrets["google"]["gcp_service_account"]),
     scopes=SCOPES
 )
 
