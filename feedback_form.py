@@ -2,7 +2,7 @@ from datetime import date
 import streamlit as st
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
+import json
 # ------------------- CONFIG -------------------
 SPREADSHEET_ID = "1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0"
 SHEET_NAME = "Sheet1"
