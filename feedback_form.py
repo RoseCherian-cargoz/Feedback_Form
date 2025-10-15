@@ -87,7 +87,7 @@ def upload_to_drive(uploaded_file):
 st.title("📋 Feedback Submission Form")
 
 # Basic fields
-Name = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
+name = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
 feedback_date = date.today()  # Automatic current date
 
 # Product selection with radio buttons
