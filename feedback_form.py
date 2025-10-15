@@ -42,7 +42,7 @@ drive_service = build("drive", "v3", credentials=credentials)
 def ensure_header():
     """Ensure the header row exists in the Google Sheet."""
     header = [
-        "POC", "Date", "Product", "Feedback", "Attachments", "Partner Team"
+        "POC", "Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team"
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
