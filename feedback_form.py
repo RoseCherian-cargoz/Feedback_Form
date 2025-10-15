@@ -46,7 +46,7 @@ def ensure_header():
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A3-F3"
+        range=f"{SHEET_NAME}!A3:I3"
     ).execute()
     existing_header = result.get("values", [])
     if not existing_header or existing_header[0] != header:
