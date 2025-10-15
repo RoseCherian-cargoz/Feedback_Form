@@ -140,7 +140,7 @@ if st.button("Submit"):
                 poc,
                 team,
                 str(feedback_date),
-                product
+                product,
                 feedback,
                 description,
                 # product_flow,
