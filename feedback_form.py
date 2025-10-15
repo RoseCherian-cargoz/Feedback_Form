@@ -30,8 +30,8 @@ drive_service = build("drive", "v3", credentials=credentials)
 def ensure_header():
     """Ensure the header row exists in the Google Sheet."""
     header = [
-        "POC", "Team", "Date", "Feedback",
-        "Description", "Product", "Impact", "Attachments"
+        "POC", "Team", "Date","Product","Feedback",
+        "Description", "Impact", "Attachments"
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
@@ -91,9 +91,24 @@ st.title("📋 Product Feedback Submission Form")
 poc = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
 team = st.text_input("Team", placeholder="e.g., Development, Marketing, Design")
 feedback_date = st.date_input("Date", value=date.today())
+product = st.selectbox(
+    "Product",
+    [
+        "PPC landing page",
+        "Thank you webpage",
+        "Thank you email",
+        "Lead form",
+        "Warehouse finder",
+        "Warehouse data",
+        "Quotation",
+        "Quotation sharing with customer",
+        "Log note",
+        "Email notifications on lead actions"
+    ]
+)
 feedback = st.text_area("Feedback", placeholder="Summarize the feedback here")
 description = st.text_area("Description", placeholder="Add more details about the feedback")
-product_flow = st.text_input("Which Product / Page / Flow?", placeholder="e.g., Checkout Page, Dashboard, etc.")
+# product_flow = st.text_input("Which Product / Page / Flow?", placeholder="e.g., Checkout Page, Dashboard, etc.")
 reason_impact = st.text_area("What is the reason for implementing it? - Impact", placeholder="Describe the business or user impact")
 
 attachments = st.file_uploader(
@@ -125,9 +140,10 @@ if st.button("Submit"):
                 poc,
                 team,
                 str(feedback_date),
+                product
                 feedback,
                 description,
-                product_flow,
+                # product_flow,
                 reason_impact,
                 attachments_str
             ]
