@@ -5,6 +5,20 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 import io
 import json
+import smtplib
+from email.message import EmailMessage
+
+def notify_rose():
+    msg = EmailMessage()
+    msg['Subject'] = "Warehouse Data Feedback Submitted"
+    msg['From'] = st.secrets["gmail"]["email"]
+    msg['To'] = "rose@cargoz.com"
+    msg.set_content("A new feedback row has been submitted for Warehouse Data. Please check the sheet.")
+
+    # Use Gmail SMTP with App Password from secrets
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(st.secrets["gmail"]["email"], st.secrets["gmail"]["app_password"])
+        smtp.send_message(msg)
 
 # ------------------- CONFIG -------------------
 SPREADSHEET_ID = "1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0"
@@ -138,6 +152,7 @@ if st.button("Submit"):
 
             if product == "Warehouse data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
+                notify_rose()  # Send email notification
             else:
                 partner_team_flag = "N/A"
 
