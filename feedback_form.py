@@ -42,7 +42,7 @@ drive_service = build("drive", "v3", credentials=credentials)
 def ensure_header():
     """Ensure the header row exists in the Google Sheet."""
     header = [
-        "POC", "Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team"
+        "POC", "Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team","Partner Team Comments","","Data Team Comments",""
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
@@ -155,7 +155,11 @@ if st.button("Submit"):
                 warehouse_name if product_type == "Warehouse Data" else "N/A",  
                 feedback,
                 attachments_str,
-                partner_team_flag
+                partner_team_flag,
+                "",
+                "",
+                "",
+                ""
             ]
             append_row(row)
             st.success("✅ Form submitted successfully and saved to Google Sheets with attachment links!")
