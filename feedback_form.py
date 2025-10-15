@@ -149,7 +149,7 @@ if st.button("Submit"):
                 partner_team_flag = "N/A"
 
             row = [
-                name
+                name,
                 str(feedback_date),
                 product,
                 warehouse_name if product_type == "Warehouse Data" else "N/A",  
