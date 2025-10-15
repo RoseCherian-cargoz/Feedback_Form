@@ -9,12 +9,12 @@ import smtplib
 from email.message import EmailMessage
 
 # ------------------- EMAIL NOTIFICATION -------------------
-def notify_rose():
+def notify_rose(feedback_text):
     msg = EmailMessage()
     msg['Subject'] = "Warehouse Data Feedback Submitted"
     msg['From'] = st.secrets["gmail"]["email"]
     msg['To'] = "rose@cargoz.com"
-    msg.set_content("A new feedback row has been submitted for Warehouse Data. Please check the sheet.")
+    msg.set_content(f"A new feedback row has been submitted for Warehouse Data.\n\nFeedback:\n{feedback_text}")
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(st.secrets["gmail"]["email"], st.secrets["gmail"]["app_password"])
@@ -142,9 +142,9 @@ if st.button("Submit"):
             # Partner Team logic based on radio button
             if product_type == "Warehouse Data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
-                notify_rose()  # Send email notification
+                notify_rose(feedback)  # Pass the feedback text to email
             else:
-                partner_team_flag = "N/A"
+            partner_team_flag = "N/A"
 
             row = [
                 poc,
