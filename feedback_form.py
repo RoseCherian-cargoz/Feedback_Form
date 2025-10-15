@@ -46,13 +46,13 @@ def ensure_header():
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A1:F1"
+        range=f"{SHEET_NAME}!A3-F3"
     ).execute()
     existing_header = result.get("values", [])
     if not existing_header or existing_header[0] != header:
         sheets_service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A1",
+            range=f"{SHEET_NAME}!A3"
             valueInputOption="RAW",
             body={"values": [header]}
         ).execute()
@@ -60,7 +60,7 @@ def ensure_header():
 def append_row(data: list):
     sheets_service.spreadsheets().values().append(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A2",
+        range=f"{SHEET_NAME}!A4"
         valueInputOption="RAW",
         insertDataOption="INSERT_ROWS",
         body={"values": [data]}
