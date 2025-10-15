@@ -9,7 +9,7 @@ import smtplib
 from email.message import EmailMessage
 
 # ------------------- EMAIL NOTIFICATION -------------------
-def notify_rose(feedback_text):
+def notify_rose(feedback_text, warehouse_name=None):
     msg = EmailMessage()
     msg['Subject'] = "Warehouse Data Feedback Submitted"
     msg['From'] = st.secrets["gmail"]["email"]
