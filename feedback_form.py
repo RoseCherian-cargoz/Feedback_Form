@@ -144,7 +144,7 @@ if st.button("Submit"):
             if product_type == "Warehouse Data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
                   # Pass the feedback text to email
-                notify_rose(warehouse_name,feedback)
+                notify_rose(feedback,warehouse_name)
             else:
                 partner_team_flag = "N/A"
 
@@ -152,6 +152,7 @@ if st.button("Submit"):
                 poc,
                 str(feedback_date),
                 product,
+                warehouse_name if product_type == "Warehouse Data" else "N/A",  
                 feedback,
                 attachments_str,
                 partner_team_flag
