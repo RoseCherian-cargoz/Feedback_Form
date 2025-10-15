@@ -144,7 +144,7 @@ if st.button("Submit"):
                 partner_team_flag = "Yes - @rose@cargoz.com"
                 notify_rose(feedback)  # Pass the feedback text to email
             else:
-            partner_team_flag = "N/A"
+                partner_team_flag = "N/A"
 
             row = [
                 poc,
