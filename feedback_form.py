@@ -123,8 +123,8 @@ attachments = st.file_uploader(
 # ------------------- SUBMIT -------------------
 # ------------------- SUBMIT -------------------
 if st.button("Submit"):
-    if not poc or not feedback:
-        st.error("⚠️ Please fill at least POC and Feedback.")
+    if not name not feedback:
+        st.error("⚠️ Please fill at least Name and Feedback.")
     else:
         try:
             ensure_header()
