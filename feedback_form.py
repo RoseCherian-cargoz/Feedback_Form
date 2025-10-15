@@ -42,7 +42,7 @@ drive_service = build("drive", "v3", credentials=credentials)
 def ensure_header():
     """Ensure the header row exists in the Google Sheet."""
     header = [
-        "POC", "Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team","Partner Team Comments","Data Team Comments"
+        "Name","Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team","Partner Team Comments","Data Team Comments"
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
@@ -87,7 +87,7 @@ def upload_to_drive(uploaded_file):
 st.title("📋 Feedback Submission Form")
 
 # Basic fields
-poc = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
+Name = st.text_input("POC (Point of Contact)", placeholder="Name of the person responsible")
 feedback_date = date.today()  # Automatic current date
 
 # Product selection with radio buttons
@@ -149,7 +149,7 @@ if st.button("Submit"):
                 partner_team_flag = "N/A"
 
             row = [
-                poc,
+                name
                 str(feedback_date),
                 product,
                 warehouse_name if product_type == "Warehouse Data" else "N/A",  
