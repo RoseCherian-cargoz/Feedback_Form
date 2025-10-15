@@ -94,7 +94,8 @@ feedback_date = date.today()  # Automatic current date
 product_type = st.radio("Select Type", ["Warehouse Data", "Product Feedback"])
 
 if product_type == "Warehouse Data":
-    product = "Current WMS"  # Tag as current WMS
+    product = "warehouse Data"
+    warehouse_name = st.text_input("Warehouse Name", placeholder="Enter warehouse name")
 else:
     product = st.selectbox(
         "Select Product",
@@ -142,8 +143,8 @@ if st.button("Submit"):
             # Partner Team logic based on radio button
             if product_type == "Warehouse Data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
-                notify_rose(feedback)  # Pass the feedback text to email
-                warehouse_name = st.text_input("Warehouse Name", placeholder="Enter warehouse name")
+                  # Pass the feedback text to email
+                notify_rose(warehouse_name,feedback)
             else:
                 partner_team_flag = "N/A"
 
