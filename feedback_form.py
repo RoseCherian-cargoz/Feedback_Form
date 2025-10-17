@@ -11,7 +11,7 @@ from email.message import EmailMessage
 # ------------------- EMAIL NOTIFICATION -------------------
 def notify_rose(feedback_text, warehouse_name=None):
     msg = EmailMessage()
-    msg['Subject'] = "Warehouse Data Feedback Submitted"
+    msg['Subject'] = "Action Required : New Warehouse data feedback"
     msg['From'] = st.secrets["gmail"]["email"]
     msg['To'] = "rose@cargoz.com"
     content = f"Warehouse Name: {warehouse_name}\n\nFeedback:\n{feedback_text}" if warehouse_name else feedback_text
