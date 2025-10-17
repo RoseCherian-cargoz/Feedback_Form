@@ -158,7 +158,7 @@ if st.button("Submit"):
 
             # Prepare row based on feedback type
             if product_type == "Warehouse Data":
-                partner_team_flag = "Yes - @rose@cargoz.com"
+                partner_team_flag = "Yes"
                 notify_rose(feedback, warehouse_name)
                 row = [
                     name,
