@@ -42,13 +42,19 @@ drive_service = build("drive", "v3", credentials=credentials)
 # ------------------- FUNCTIONS -------------------
 def ensure_header(sheet_name):
     """Ensure the header row exists in the given Google Sheet."""
-    header = [
-        "Name", "Date", "Product", "Warehouse Name", "Feedback",
-        "Attachments", "Partner Team", "Partner Team Comments", "Data Team Comments"
-    ]
+    if sheet_name == WAREHOUSE_SHEET:
+        header = [
+            "Name", "Date", "Product", "Warehouse Name", "Feedback",
+            "Attachments", "Partner Team", "Partner Team Comments", "Data Team Comments"
+        ]
+        range_ref = "A3:I3"
+    else:
+        header = ["Name", "Date", "Product", "Feedback", "Attachments"]
+        range_ref = "A3:E3"
+
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{sheet_name}!A3:I3"
+        range=f"{sheet_name}!{range_ref}"
     ).execute()
     existing_header = result.get("values", [])
     if not existing_header or existing_header[0] != header:
@@ -69,6 +75,7 @@ def append_row(sheet_name, data: list):
         insertDataOption="INSERT_ROWS",
         body={"values": [data]}
     ).execute()
+
 
 def upload_to_drive(uploaded_file):
     try:
@@ -125,17 +132,16 @@ attachments = st.file_uploader(
 )
 
 # ------------------- SUBMIT -------------------
-# ------------------- SUBMIT -------------------
 if st.button("Submit"):
     if not name or not feedback:
         st.error("⚠️ Please fill at least Name and Feedback.")
     else:
         try:
-            # Choose sheet based on product type
+            # Choose target sheet
             if product_type == "Warehouse Data":
-                sheet_name = "Warehouse Data"
+                sheet_name = WAREHOUSE_SHEET
             else:
-                sheet_name = "Product Feedback"
+                sheet_name = PRODUCT_SHEET
 
             ensure_header(sheet_name)
 
@@ -146,28 +152,33 @@ if st.button("Submit"):
                     link = upload_to_drive(file)
                     if link:
                         attachment_links.append(link)
-                attachments_str = ", ".join(attachment_links) if attachment_links else "N/A"
+                attachments_str = ", ".join(attachment_links)
             else:
                 attachments_str = "N/A"
 
-            # Partner Team logic based on radio button
+            # Prepare row based on feedback type
             if product_type == "Warehouse Data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
                 notify_rose(feedback, warehouse_name)
+                row = [
+                    name,
+                    str(feedback_date),
+                    product,
+                    warehouse_name,
+                    feedback,
+                    attachments_str,
+                    partner_team_flag,
+                    "",
+                    "",
+                ]
             else:
-                partner_team_flag = "N/A"
-
-            row = [
-                name,
-                str(feedback_date),
-                product,
-                warehouse_name if product_type == "Warehouse Data" else "N/A",
-                feedback,
-                attachments_str,
-                partner_team_flag,
-                "",
-                "",
-            ]
+                row = [
+                    name,
+                    str(feedback_date),
+                    product,
+                    feedback,
+                    attachments_str,
+                ]
 
             append_row(sheet_name, row)
             st.success(f"✅ Feedback saved successfully to '{sheet_name}' sheet with attachments!")
