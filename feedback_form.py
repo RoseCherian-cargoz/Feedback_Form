@@ -22,7 +22,8 @@ def notify_rose(feedback_text, warehouse_name=None):
 
 # ------------------- CONFIG -------------------
 SPREADSHEET_ID = "1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0"
-SHEET_NAME = "Sheet1"
+WAREHOUSE_SHEET = "Warehouse Data"
+PRODUCT_SHEET = "Product Feedback"
 SHARED_DRIVE_FOLDER_ID = "0AAOj3djVHPpNUk9PVA"  # Shared Drive ID
 
 SCOPES = [
@@ -39,28 +40,31 @@ sheets_service = build("sheets", "v4", credentials=credentials)
 drive_service = build("drive", "v3", credentials=credentials)
 
 # ------------------- FUNCTIONS -------------------
-def ensure_header():
-    """Ensure the header row exists in the Google Sheet."""
+def ensure_header(sheet_name):
+    """Ensure the header row exists in the given Google Sheet."""
     header = [
-        "Name","Date", "Product","Warehouse Name","Feedback","Attachments", "Partner Team","Partner Team Comments","Data Team Comments"
+        "Name", "Date", "Product", "Warehouse Name", "Feedback",
+        "Attachments", "Partner Team", "Partner Team Comments", "Data Team Comments"
     ]
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A3:I3"
+        range=f"{sheet_name}!A3:I3"
     ).execute()
     existing_header = result.get("values", [])
     if not existing_header or existing_header[0] != header:
         sheets_service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A3",
+            range=f"{sheet_name}!A3",
             valueInputOption="RAW",
             body={"values": [header]}
         ).execute()
 
-def append_row(data: list):
+
+def append_row(sheet_name, data: list):
+    """Append a new row to the specified sheet."""
     sheets_service.spreadsheets().values().append(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A4", 
+        range=f"{sheet_name}!A4",
         valueInputOption="RAW",
         insertDataOption="INSERT_ROWS",
         body={"values": [data]}
@@ -127,7 +131,13 @@ if st.button("Submit"):
         st.error("⚠️ Please fill at least Name and Feedback.")
     else:
         try:
-            ensure_header()
+            # Choose sheet based on product type
+            if product_type == "Warehouse Data":
+                sheet_name = "Warehouse Data"
+            else:
+                sheet_name = "Product Feedback"
+
+            ensure_header(sheet_name)
 
             # Upload attachments
             if attachments:
@@ -143,8 +153,7 @@ if st.button("Submit"):
             # Partner Team logic based on radio button
             if product_type == "Warehouse Data":
                 partner_team_flag = "Yes - @rose@cargoz.com"
-                  # Pass the feedback text to email
-                notify_rose(feedback,warehouse_name)
+                notify_rose(feedback, warehouse_name)
             else:
                 partner_team_flag = "N/A"
 
@@ -152,16 +161,16 @@ if st.button("Submit"):
                 name,
                 str(feedback_date),
                 product,
-                warehouse_name if product_type == "Warehouse Data" else "N/A",  
+                warehouse_name if product_type == "Warehouse Data" else "N/A",
                 feedback,
                 attachments_str,
                 partner_team_flag,
                 "",
                 "",
             ]
-            append_row(row)
-            st.success("✅ Form submitted successfully and saved to Google Sheets with attachment links!")
+
+            append_row(sheet_name, row)
+            st.success(f"✅ Feedback saved successfully to '{sheet_name}' sheet with attachments!")
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
-
