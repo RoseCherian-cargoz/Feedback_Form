@@ -13,7 +13,7 @@ def notify_rose(feedback_text, warehouse_name=None):
     msg = EmailMessage()
     msg['Subject'] = "Action Required : New Warehouse Data Feedback"
     msg['From'] = st.secrets["gmail"]["email"]
-    msg['To'] = "rose@cargoz.com"
+    msg['To'] = "anjitha@cargoz.com"
     # content = f"Warehouse Name: {warehouse_name}\n\nFeedback:\n{feedback_text}" if warehouse_name else feedback_text
     # msg.set_content(f"A new feedback row has been submitted for Warehouse Data.\n\n{content}")
     SHEET_LINK = "https://docs.google.com/spreadsheets/d/1oqEuvvbHXKyFODImoLnNmy6QlcCxtAXlGe9lD6fDlA0/edit?gid=0#gid=0"
