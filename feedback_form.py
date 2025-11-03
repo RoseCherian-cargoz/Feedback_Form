@@ -128,7 +128,7 @@ else:
             "Quotation",
             "Quotation sharing with customer",
             "Log note",
-            "Email notifications on lead actions"
+            "Email notifications on lead actions",
             "Customer dashboard",
             "Partner dashboard"
         ]
