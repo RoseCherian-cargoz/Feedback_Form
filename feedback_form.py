@@ -139,7 +139,7 @@ feedback = st.text_area("Feedback", placeholder="Summarize the feedback here")
 attachments = st.file_uploader(
     "Reference doc / Screenshots / Images / Data (Attach if needed)",
     accept_multiple_files=True,
-    type=["png", "jpg", "jpeg", "pdf", "docx", "xlsx"]
+    type=["png", "jpg", "jpeg", "pdf", "docx", "xlsx", "mp4", "mov", "avi", "mkv"]
 )
 
 # ------------------- SUBMIT -------------------
