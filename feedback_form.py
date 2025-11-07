@@ -130,7 +130,8 @@ else:
             "Log note",
             "Email notifications on lead actions",
             "Customer dashboard",
-            "Partner dashboard"
+            "Partner dashboard",
+            "Pro-Forma Invoice"
         ]
     )
 
