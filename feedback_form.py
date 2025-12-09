@@ -127,7 +127,7 @@ else:
             "Warehouse finder",
             "Quotation",
             "Quotation sharing with customer",
-            "Lead stages and lost reason"
+            "Lead stages and lost reason",
             "Log note",
             "Email notifications on lead actions",
             "Customer dashboard",
